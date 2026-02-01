@@ -1,4 +1,36 @@
+import pygame
+import sys
 
+# ---------- BASIC SETUP ----------
+pygame.init()
+
+WIDTH, HEIGHT = 800, 500
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Ping Pong - Tool A (ChatGPT)")
+
+clock = pygame.time.Clock()
+font = pygame.font.SysFont(None, 36)
+
+# ---------- COLORS ----------
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+# ---------- PADDLES ----------
+paddle_width, paddle_height = 10, 80
+left_paddle = pygame.Rect(30, HEIGHT // 2 - 40, paddle_width, paddle_height)
+right_paddle = pygame.Rect(WIDTH - 40, HEIGHT // 2 - 40, paddle_width, paddle_height)
+paddle_speed = 6
+
+# ---------- BALL ----------
+ball = pygame.Rect(WIDTH // 2, HEIGHT // 2, 12, 12)
+ball_speed_x = 5
+ball_speed_y = 5
+
+# ---------- SCORE ----------
+left_score = 0
+right_score = 0
+
+# ---------- GAME LOOP ----------
 running = True
 while running:
     clock.tick(60)
