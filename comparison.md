@@ -16,18 +16,10 @@
 
 ## Conclusion & Key Takeaways
 
-This lab demonstrated that generative AI tools influence not only *what* is built, but *how* developers think and work while building it. Key takeaways from this exercise include:
+This lab helped me realize that generative AI tools affect not just the final output, but also the way I approach problem-solving while building a project. While working on the Ping-Pong game, I noticed a few key differences in how each tool fit into my development process.
 
-- **Different tools support different stages of development:**  
-  VS Code with GitHub Copilot encouraged an exploratory and learning-focused workflow, where requirements could be refined incrementally through comments and inline suggestions. Gemini CLI, on the other hand, excelled at rapid execution by generating complete, working files with minimal setup.
+Using VS Code with GitHub Copilot felt more exploratory and learning-oriented. I was able to explain my intent through comments, accept or modify suggestions step by step, and gradually refine the code. This made it easier to understand how different parts of the game worked together as I built it.
 
-- **Interaction style impacts debugging and understanding:**  
-  Copilot’s conversational, in-editor interaction made it easier to explain intent and reason through debugging steps, while Gemini CLI prioritized efficiency by applying changes directly to files with controlled approvals.
+In contrast, Gemini CLI was much more execution-focused. It generated complete files quickly and handled changes efficiently, which helped me move from an idea to a working version faster. However, this speed sometimes came at the cost of visibility into the logic, especially when compared to Copilot’s in-editor guidance.
 
-- **Speed versus interpretability is a meaningful trade-off:**  
-  While Gemini CLI enabled faster transitions from idea to prototype, Copilot provided greater transparency into the underlying logic, which was especially valuable from a learning perspective.
-
-- **Tool choice should be context-driven:**  
-  This exercise reinforced that there is no single “best” generative AI tool. Instead, effective use depends on the task, the user’s familiarity with the environment, and whether the goal is rapid implementation or deeper conceptual understanding.
-
-Overall, this assignment helped me recognize my own preferences as a developer and clarified how different generative AI tools can support both my learning process and my productivity in different ways.
+Overall, this experience showed me that there is a meaningful trade-off between speed and interpretability. Copilot supported deeper understanding and easier debugging, while Gemini CLI prioritized efficiency and automation. This lab reinforced that there is no single “best” generative AI tool, choosing the right one depends on the task, the stage of development, and whether the goal is learning or rapid implementation.
