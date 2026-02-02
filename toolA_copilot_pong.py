@@ -23,24 +23,49 @@ DARK_BLUE = (10, 20, 40)
 PADDLE_WIDTH, PADDLE_HEIGHT = 10, 100
 BALL_SIZE = 15
 FPS = 60
-FONT = pygame.font.SysFont("comicsans", 40)
+FONT = pygame.font.SysFont("Arial", 40)
 
 # Create starfield
 class Star:
     def __init__(self):
         self.x = random.randint(0, WIDTH)
         self.y = random.randint(0, HEIGHT)
+        self.z = random.randint(1, WIDTH) # Star's depth
+        self.pz = self.z # Previous depth
         self.brightness = random.randint(100, 255)
         self.twinkle_speed = random.uniform(0.05, 0.2)
         self.twinkle_phase = random.uniform(0, 6.28)
+        self.speed = 2
 
     def update(self):
+        self.z -= self.speed
+        if self.z < 1:
+            self.z = WIDTH
+            self.x = random.randint(0, WIDTH)
+            self.y = random.randint(0, HEIGHT)
+            self.pz = self.z
+
         self.twinkle_phase += self.twinkle_speed
         self.brightness = int(150 + 105 * ((1 + math.sin(self.twinkle_phase)) / 2))
 
     def draw(self, win):
+        sx = (self.x - WIDTH / 2) * (WIDTH / self.z) + WIDTH / 2
+        sy = (self.y - HEIGHT / 2) * (WIDTH / self.z) + HEIGHT / 2
+        
+        radius = (1 - self.z / WIDTH) * 3
+        
+        # Draw a line for the trailing effect
+        px = (self.x - WIDTH / 2) * (WIDTH / self.pz) + WIDTH / 2
+        py = (self.y - HEIGHT / 2) * (WIDTH / self.pz) + HEIGHT / 2
+        self.pz = self.z
+        
+        # Fading trail
+        trail_color = (self.brightness * 0.5, self.brightness * 0.5, self.brightness * 0.4)
+        pygame.draw.line(win, trail_color, (px, py), (sx, sy))
+        
+        # Star itself
         color = (self.brightness, self.brightness, self.brightness * 0.8)
-        pygame.draw.circle(win, color, (int(self.x), int(self.y)), 1)
+        pygame.draw.circle(win, color, (int(sx), int(sy)), int(radius))
 
 stars = [Star() for _ in range(150)]
 
@@ -71,6 +96,14 @@ class Particle:
         return self.lifetime > 0
 
 particles = []
+# --- Screen Shake ---
+shake_intensity = 0
+shake_duration = 0
+
+def trigger_shake(intensity, duration):
+    global shake_intensity, shake_duration
+    shake_intensity = intensity
+    shake_duration = duration
 
 class Paddle:
     def __init__(self, x, y):
@@ -89,8 +122,8 @@ class Paddle:
 class Ball:
     def __init__(self, x, y):
         self.rect = pygame.Rect(x, y, BALL_SIZE, BALL_SIZE)
-        self.x_vel = random.choice([-5, 5])
-        self.y_vel = random.choice([-5, 5])
+        self.x_vel = random.choice([-3, 3])
+        self.y_vel = random.choice([-3, 3])
 
     def move(self):
         self.rect.x += self.x_vel
@@ -102,32 +135,47 @@ class Ball:
     def reset(self):
         self.rect.center = (WIDTH // 2, HEIGHT // 2)
         self.x_vel *= -1
-        self.y_vel = random.choice([-5, 5])
+        self.y_vel = random.choice([-3, 3])
 
 def create_impact(x, y, num_particles=15):
     for _ in range(num_particles):
         particles.append(Particle(x, y))
 
 def draw(win, paddles, ball, scores):
-    win.fill(DARK_BLUE)
+    global shake_duration, shake_intensity
+    
+    # Create a temporary surface to draw on
+    temp_surface = pygame.Surface((WIDTH, HEIGHT))
+    temp_surface.fill(DARK_BLUE)
+
     # Draw twinkling stars
     for star in stars:
         star.update()
-        star.draw(win)
+        star.draw(temp_surface)
     
     # Update and draw particles
     for particle in particles[:]:
         particle.update()
         if particle.is_alive():
-            particle.draw(win)
+            particle.draw(temp_surface)
         else:
             particles.remove(particle)
     
     for paddle in paddles:
-        paddle.draw(win)
-    ball.draw(win)
+        paddle.draw(temp_surface)
+    ball.draw(temp_surface)
     score_text = FONT.render(f"{scores[0]} - {scores[1]}", 1, WHITE)
-    win.blit(score_text, (WIDTH // 2 - score_text.get_width() // 2, 20))
+    temp_surface.blit(score_text, (WIDTH // 2 - score_text.get_width() // 2, 20))
+
+    # Apply screen shake
+    if shake_duration > 0:
+        shake_offset_x = random.randint(-shake_intensity, shake_intensity)
+        shake_offset_y = random.randint(-shake_intensity, shake_intensity)
+        win.blit(temp_surface, (shake_offset_x, shake_offset_y))
+        shake_duration -= 1
+    else:
+        win.blit(temp_surface, (0, 0))
+    
     pygame.display.update()
 
 def main():
@@ -136,6 +184,7 @@ def main():
     ball = Ball(WIDTH // 2 - BALL_SIZE // 2, HEIGHT // 2 - BALL_SIZE // 2)
     paddles = [left_paddle, right_paddle]
     scores = [0, 0]
+    hit_counter = 0
     clock = pygame.time.Clock()
     run = True
     while run:
@@ -162,9 +211,22 @@ def main():
         if ball.rect.colliderect(left_paddle.rect):
             ball.x_vel *= -1
             create_impact(ball.rect.centerx, ball.rect.centery)
+            trigger_shake(10, 10)
+            hit_counter += 1
+            if hit_counter >= 3:
+                ball.x_vel += math.copysign(0.5, ball.x_vel)
+                ball.y_vel += math.copysign(0.5, ball.y_vel)
+                hit_counter = 0
+
         if ball.rect.colliderect(right_paddle.rect):
             ball.x_vel *= -1
             create_impact(ball.rect.centerx, ball.rect.centery)
+            trigger_shake(10, 10)
+            hit_counter += 1
+            if hit_counter >= 3:
+                ball.x_vel += math.copysign(0.5, ball.x_vel)
+                ball.y_vel += math.copysign(0.5, ball.y_vel)
+                hit_counter = 0
         
         if ball.rect.left <= 0:
             scores[1] += 1
