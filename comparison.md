@@ -16,10 +16,9 @@
 
 ## Conclusion & Key Takeaways
 
-This lab helped me realize that generative AI tools affect not just the final output, but also the way I approach problem-solving while building a project. While working on the Ping-Pong game, I noticed a few key differences in how each tool fit into my development process.
+This lab showed me that generative AI tools influence not only the final output, but also how I think through problems during development. 
 
-Using VS Code with GitHub Copilot felt more exploratory and learning-oriented. I was able to explain my intent through comments, accept or modify suggestions step by step, and gradually refine the code. This made it easier to understand how different parts of the game worked together as I built it.
+Using VS Code with GitHub Copilot felt more exploratory and collaborative, as I could explain intent through comments and refine the code step by step, which supported deeper understanding and easier debugging. 
 
-In contrast, Gemini CLI was much more execution-focused. It generated complete files quickly and handled changes efficiently, which helped me move from an idea to a working version faster. However, this speed sometimes came at the cost of visibility into the logic, especially when compared to Copilot’s in-editor guidance.
+In contrast, Gemini CLI was more execution-focused, generating complete files quickly and applying direct edits efficiently, but with less opportunity for interactive back-and-forth. Overall, this experience reinforced that there is no single “best” tool, effective use of generative AI depends on the task, the stage of development, and whether the goal is learning or rapid implementation.
 
-Overall, this experience showed me that there is a meaningful trade-off between speed and interpretability. Copilot supported deeper understanding and easier debugging, while Gemini CLI prioritized efficiency and automation. This lab reinforced that there is no single “best” generative AI tool, choosing the right one depends on the task, the stage of development, and whether the goal is learning or rapid implementation.
